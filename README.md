@@ -249,6 +249,9 @@ python src/analysis/inference_overhead_analysis.py
 - FFN (Feed-Forward Network) permutation encryption/decryption
 - Forward pass execution time
 
+Because we cannot ship the PUF to the reviewers or other researchers, we cannot demonstrate the performance of our hardware-related perforamnce. However, we note that the time required for PUF evaluation and key generation is microsecond-level, while the network inference is millisecond-level. Therefore, the overhead of our PUF-based key generation is negligible compared to the inference time.
+
+
 ## Contact
 
 For issues or questions about this artifact, please refer to the paper or contact the authors by email (peichunhua@link.cuhk.edu.cn).

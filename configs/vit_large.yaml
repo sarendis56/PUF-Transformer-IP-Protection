@@ -1,0 +1,29 @@
+# Vision Transformer Large Model Configuration
+# This configuration file defines parameters for ViT-large encryption experiments
+
+# Model Configuration
+model_name: "google/vit-large-patch16-224"
+local_model_path: model/vit-large-patch16-224
+device: "cuda"
+
+# Dataset Configuration
+imagenet_path: "dataset/imagenet/val"
+batch_size: 128
+num_workers: 16
+
+# Encryption Configuration
+arnold_key: [5, 2, 3, 3, 5]  # Stronger Arnold key for large model
+password: null
+num_permutation_matrices: 8  # More matrices for enhanced security
+num_extra_layers: 6
+
+# Experiment Configuration
+output_dir: "results"
+save_checkpoints: true
+log_level: "INFO"
+random_seed: 42
+
+# Evaluation Configuration
+evaluate_initial: true
+evaluate_each_step: true
+generate_reports: true

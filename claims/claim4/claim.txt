@@ -1,0 +1,23 @@
+Claim 4: Low Inference Overhead
+
+- Demonstration: Measure the baseline inference time for the DeiT-tiny model on a batch of images. 
+The relative increase in time is modest.
+
+This is for Figure 7 in the paper.
+
+Note that:
+- In the expected output, the extra overhead can be around 0.7x-1.5x for typical use cases. This is
+higher than what is shown in Figure 7 of the paper. This is because DeiT-tiny is a more efficient
+architecture than ViT, and the Tiny version of the model has very small hidden dimension (192)
+compared to ViT-base. Therefore, the baseline inference cost is significantly lower, and the 
+relative overhead is higher. For reference, on the same GPU, 64 images inference take around 75ms,
+and for DeiT-Tiny it's only around 10ms. However, our ACM encryption is not significantly faster
+for 192*192 matrices compared to 768*768 matrices due to GPU compute underutilization and our design
+for not parallelizing the encryption of different layers (see paper for why). We argue that this
+does not invalidate our claim, as the overhead is still modest and acceptable for practical
+deployment.
+
+- Because we cannot ship the PUF to the reviewers, we cannot demonstrate the performance of our
+hardware-related perforamnce. However, we note that the time required for PUF evaluation and key
+generation is microsecond-level, while the network inference is millisecond-level. Therefore, the
+overhead of our PUF-based key generation is negligible compared to the inference time.

@@ -1,0 +1,29 @@
+# Vision Transformer Base Model Configuration
+# This configuration file defines parameters for ViT-base-patch16-224 encryption experiments
+
+# Model Configuration
+model_name: "google/vit-base-patch16-224"
+local_model_path: model/vit-base-patch16-224
+device: "cuda"
+
+# Dataset Configuration
+imagenet_path: "dataset/imagenet/val"
+batch_size: 128
+num_workers: 8
+
+# Encryption Configuration
+arnold_key: [3, 1, 1, 1, 2]  # Default Arnold Cat Map key [N, a, b, c, d]
+password: null  # Set to enable password-based permutation generation
+num_permutation_matrices: 6
+num_extra_layers: 4
+
+# Experiment Configuration
+output_dir: "results"
+save_checkpoints: true
+log_level: "INFO"
+random_seed: 42
+
+# Evaluation Configuration
+evaluate_initial: true
+evaluate_each_step: true
+generate_reports: true

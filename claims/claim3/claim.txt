@@ -1,0 +1,8 @@
+Claim 3: Robustness to Retraining Attacks
+
+This is for table 3 in the paper.
+
+- Demonstration: retraining attack on the obfuscated DeiT-tiny model using the 
+20%/50% CIFAR-100 training set. The results will show that the retrained model's 
+accuracy remains noticeably lower than the original, non-obfuscated model, just as 
+the paper shows in Table 3.

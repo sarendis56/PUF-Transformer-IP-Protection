@@ -1,0 +1,20 @@
+# Core dependencies
+torch>=1.9.0
+torchvision>=0.10.0
+transformers>=4.20.0
+numpy>=1.21.0
+
+# Data handling
+pillow>=8.3.0
+datasets>=2.0.0
+
+# Utilities
+tqdm>=4.62.0
+pyyaml>=6.0
+matplotlib>=3.5.0
+
+# Performance optimization
+numba>=0.56.0
+
+pypuf==2.2.0 # For PUF simulation
+seaborn>=0.13.2

@@ -1,0 +1,8 @@
+Claim 2: Full Performance Restoration
+
+The method is fully reversible, this can be easily shown. 
+This is for the fourth row in table 2 in the paper.
+
+- Demonstration: After showing the accuracy drop, apply the correct key to 
+de-obfuscate the model. The artifact will show that the model's accuracy on CIFAR-100 
+is restored to its original, high-performance level, proving no loss of performance. 

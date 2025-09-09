@@ -1,0 +1,39 @@
+# DeiT-tiny Model Configuration for CIFAR-100
+# This configuration file defines parameters for DeiT-tiny encryption experiments on CIFAR-100
+
+# Model Configuration
+model_name: "facebook/deit-tiny-patch16-224"
+local_model_path: model/deit-tiny-patch16-224
+device: "cuda"
+
+# Dataset Configuration
+dataset_name: "cifar100"
+cifar100_path: "dataset/cifar100"
+batch_size: 128
+num_workers: 8
+
+# Encryption Configuration
+arnold_key: [3, 1, 1, 1, 2]  # Default Arnold Cat Map key [N, a, b, c, d]
+password: null  # Set to enable password-based permutation generation
+num_permutation_matrices: 6
+num_extra_layers: 2  # Reduced for smaller model
+
+# Experiment Configuration
+output_dir: "results"
+save_checkpoints: true
+log_level: "INFO"
+random_seed: 42
+
+# Evaluation Configuration
+evaluate_initial: true
+evaluate_each_step: true
+generate_reports: true
+
+# Training Configuration (for retraining attacks)
+training_rate: 0.2  # Use 20% of CIFAR-100 training data
+learning_rate: 5e-5
+weight_decay: 1e-3
+epochs: 10
+use_augmentation: true
+augment_strength: "medium"
+lr_scheduler: "cosine"

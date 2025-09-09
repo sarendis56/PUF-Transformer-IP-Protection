@@ -1,0 +1,41 @@
+Claim 5: Robustness of our ACM+permutation encryption against key-guessing attacks
+
+This claim demonstrates that the dual encryption scheme (Arnold Cat Map + permutation matrices)
+provides robust security against various key-guessing attack scenarios. The analysis consists
+of four comprehensive experiments that validate different aspects of the encryption's security.
+This is for the figure 6 and table 6 in the paper. We also include some experiments that are
+not presented in the paper due to page limit.
+
+- Demonstration:
+
+1. ACM Key Sensitivity Analysis (Figure 6a)
+   - Tests how sensitive the encrypted model is to variations in Arnold Cat Map keys
+   - Generates multiple valid ACM key variants from a base key
+   - Encrypts attention weights with each key variant using dual encryption
+   - Evaluates accuracy degradation for each key to measure sensitivity
+   - Validates that small key changes cause significant accuracy drops, making brute-force attacks difficult
+
+2. Permutation Sensitivity Analysis
+   - Tests the sensitivity of the dual encryption scheme to different permutation matrices
+   - Generates multiple permutation matrices using various random seeds
+   - Applies permutations to FFN weights within the dual encryption scheme
+   - Evaluates accuracy degradation for each permutation variant
+   - Validates that different permutation matrices provide consistent security guarantees
+   - Measures permutation intensity (number of displaced elements) and its correlation with accuracy drops
+
+3. Dual Encryption Security Analysis
+   - Evaluates security against partial key recovery attacks
+   - Tests three scenarios:
+     a) Original model (no encryption) - baseline performance
+     b) Dual encrypted model (both ACM + permutation) - fully encrypted performance
+     c) Key guessing attacks where attacker knows one key and guesses the other
+   - Measures whether partial key knowledge provides significant advantage
+   - Validates that knowing one key type doesn't help with attacking the other
+
+4. Decrypt One Layer Analysis (Table 6)
+   - Tests whether correctly decrypting a single layer provides significant accuracy improvements, giving hints for complete decryption of the model
+   - Starts with fully encrypted model across multiple layers
+   - Decrypts individual layers one at a time with correct keys
+   - Measures accuracy improvement from each single-layer decryption
+   - Simulates extreme scenario where attacker correctly guesses keys for one specific layer
+   - Validates that decrypting any single layer yields only minimal accuracy gains (< 1%)

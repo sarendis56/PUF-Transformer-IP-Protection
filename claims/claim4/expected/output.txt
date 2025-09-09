@@ -1,0 +1,22 @@
+# Terminal output from RTX 4090
+
+=== Inference Overhead Results ===
+ACM Iterations Overhead Analysis:
+ACM Iterations | Baseline Time | Full Time | Overhead Ratio
+---------------|---------------|-----------|---------------
+            1 |        9.83ms |        17.80ms |         1.81x
+            2 |        9.83ms |        17.64ms |         1.79x
+            3 |        9.83ms |        19.06ms |         1.94x
+            5 |        9.83ms |        23.66ms |         2.41x
+            7 |        9.83ms |        27.04ms |         2.75x
+           10 |        9.83ms |        32.93ms |         3.35x
+
+Layer Count Overhead Analysis:
+Encrypted Layers | Baseline Time | Full Time | Overhead Ratio
+-----------------|---------------|-----------|---------------
+              1 |       10.40ms |        16.49ms |         1.59x
+              2 |       10.40ms |        17.16ms |         1.65x
+              3 |       10.40ms |        17.08ms |         1.64x
+              4 |       10.40ms |        18.52ms |         1.78x
+              5 |       10.40ms |        22.01ms |         2.12x
+              6 |       10.40ms |        25.47ms |         2.45x

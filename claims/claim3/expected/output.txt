@@ -1,0 +1,19 @@
+# Using 20% of the dataset
+
+=== Retraining Attack Results ===
+Fine-tuned model accuracy:   84.27%
+Encrypted model accuracy:    0.79%
+Retrained model accuracy:    61.48%
+
+Performance gap (Fine-tuned - Retrained): 22.79%
+Improvement ratio (Retrained / Encrypted): 77.8x
+
+
+# Using 50% of the dataset (unrealistic stress test) by setting "TRAINING_RATE" to 0.5
+=== Retraining Attack Results ===
+Fine-tuned model accuracy:   84.27%
+Encrypted model accuracy:    0.79%
+Retrained model accuracy:    72.17%
+
+Performance gap (Fine-tuned - Retrained): 12.10%
+Improvement ratio (Retrained / Encrypted): 91.4x

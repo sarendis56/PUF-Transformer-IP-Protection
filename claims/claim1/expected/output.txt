@@ -1,0 +1,43 @@
+# See artifact/results/claim1/deit_encryption_timestamp/evaluation_report.txt
+
+============================================================
+IP PROTECTION EXPERIMENT EVALUATION REPORT
+============================================================
+
+Model: 
+Initial Accuracy: 84.27%
+Final Accuracy: 0.79%
+Total Accuracy Drop: 83.48%
+Number of Encrypted Layers: 4
+
+ENCRYPTION PROGRESSION:
+----------------------------------------
+Step 1: Layer 8
+  Accuracy: 7.14%
+  Drop: 77.13%
+  Permutation Matrix: 1
+  Arnold Key: [3, 1, 1, 1, 2]
+  Timestamp: 2025-09-09T01:15:01.719197
+
+Step 2: Layer 7
+  Accuracy: 1.27%
+  Drop: 83.00%
+  Permutation Matrix: 2
+  Arnold Key: [3, 1, 1, 1, 2]
+  Timestamp: 2025-09-09T01:17:26.473948
+
+Step 3: Layer 11
+  Accuracy: 1.20%
+  Drop: 83.07%
+  Permutation Matrix: 5
+  Arnold Key: [3, 1, 1, 1, 2]
+  Timestamp: 2025-09-09T01:17:35.216031
+
+Step 4: Layer 0
+  Accuracy: 0.79%
+  Drop: 83.48%
+  Permutation Matrix: 5
+  Arnold Key: [3, 1, 1, 1, 2]
+  Timestamp: 2025-09-09T01:17:44.012386
+
+============================================================

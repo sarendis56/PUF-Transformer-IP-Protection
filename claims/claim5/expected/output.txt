@@ -1,0 +1,45 @@
+============================================================
+Decrypt One Layer Analysis - facebook/deit-tiny-patch16-224
+============================================================
+Baseline (fully encrypted): 0.0079
+Original (unencrypted): 0.8427
+============================================================
+Layer  Accuracy   Improvement  Improvement %  
+------------------------------------------------------------
+8      0.0124    +0.45%        +0.45%
+7      0.0137    +0.58%        +0.58%
+11     0.0107    +0.28%        +0.28%
+0      0.0064    -0.15%        -0.15%
+============================================================
+
+Decrypt one layer analysis completed!
+Results saved to: results/claim5/decrypt_one_layer
+
+=== Security Analysis Results Summary ===
+Permutation Sensitivity Analysis:
+Initial accuracy: 84.27%
+Layer 7:
+  Mean accuracy after permutation: 35.54%
+  Mean accuracy drop: 48.73%
+  Max accuracy drop: 72.41%
+  Min accuracy drop: 31.74%
+Layer 8:
+  Mean accuracy after permutation: 17.90%
+  Mean accuracy drop: 66.37%
+  Max accuracy drop: 79.12%
+  Min accuracy drop: 47.45%
+
+Dual Encryption Security Analysis:
+Layer 7:
+  Original accuracy: 84.27%
+  Dual encrypted accuracy: 16.20%
+  ACM attack - Mean: 19.71%, Max: 26.11%
+  Permutation attack - Mean: 19.17%, Max: 29.44%
+Layer 8:
+  Original accuracy: 84.27%
+  Dual encrypted accuracy: 7.14%
+  ACM attack - Mean: 6.48%, Max: 8.72%
+  Permutation attack - Mean: 9.47%, Max: 19.62%
+
+ACM Sensitivity Analysis:
+See plots

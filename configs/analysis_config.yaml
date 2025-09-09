@@ -1,0 +1,46 @@
+# Analysis Configuration for IP Protection Research
+# This configuration file defines parameters for various analysis experiments
+
+# Model Configuration
+model_name: "google/vit-base-patch16-224"
+device: "cuda"
+
+# Dataset Configuration
+imagenet_path: "dataset/imagenet/val"
+batch_size: 128
+num_workers: 16
+
+# Analysis Configuration
+analysis:
+  # ACM Key Sensitivity Analysis
+  acm_sensitivity:
+    num_variants: 100
+    base_key: [3, 1, 1, 1, 2]  # Default Arnold key
+    layers_to_analyze: [0, 1, 2, 3]
+  
+  # Permutation Sensitivity Analysis
+  permutation_sensitivity:
+    num_permutations: 100
+    layers_to_analyze: [0, 1, 2, 3]
+
+  # Dual Encryption Security Analysis
+  dual_encryption:
+    layers_to_analyze: [0, 1, 2, 3]
+    num_attack_variants: 50
+
+# Output Configuration
+output_dir: "results/analysis"
+save_plots: true
+save_reports: true
+generate_comprehensive_report: true
+
+# Experiment Configuration
+random_seed: 42
+log_level: "INFO"
+
+# Visualization Configuration
+visualization:
+  style: "seaborn-v0_8"
+  figure_size: [15, 12]
+  dpi: 300
+  save_format: "png"

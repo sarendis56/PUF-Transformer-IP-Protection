@@ -1,0 +1,8 @@
+Claim 1: Drastic Accuracy Drop
+
+The proposed obfuscation method scrambles weights, an effect that is independent of model size.
+This is for table 2 in the paper.
+
+- Demonstration: Encrypt a few layers of the fine-tuned DeiT-tiny model. The accuracy 
+on the CIFAR-100 test set drops from a high baseline (e.g., >90%) to approximately 
+1% (random guess), just as it did on ImageNet. 

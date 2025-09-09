@@ -1,0 +1,38 @@
+# Analysis Configuration for DeiT-tiny Security Analysis
+# This configuration file defines parameters for Claim 5 security experiments
+
+# Model Configuration
+model_name: "facebook/deit-tiny-patch16-224"
+device: "cuda"
+
+# Dataset Configuration
+dataset_name: "cifar100"
+cifar100_path: "dataset/cifar100"
+batch_size: 128
+num_workers: 8
+
+# Analysis Configuration
+analysis:
+  # ACM Key Sensitivity Analysis
+  acm_sensitivity:
+    num_variants: 100  # Number of key variants to test
+    base_key: [3, 1, 1, 1, 2]  # Base Arnold key
+    layers_to_analyze: [7, 8]  # Set to the chosen layer in encryption
+  
+  # Permutation Sensitivity Analysis
+  permutation_sensitivity:
+    num_permutations: 100  # Number of permutation variants to test
+    layers_to_analyze: [7, 8]
+  
+  # Dual Encryption Security Analysis
+  dual_encryption:
+    layers_to_analyze: [7, 8]
+    num_attack_variants: 50  # Number of attack variants per scenario
+
+# Output Configuration
+output_dir: "results/analysis"
+save_plots: true
+save_detailed_results: true
+
+# Logging Configuration
+log_level: "INFO"

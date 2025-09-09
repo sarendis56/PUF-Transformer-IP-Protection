@@ -1,0 +1,23 @@
+# Terminal output
+
+=== Performance Restoration Results ===
+Original accuracy (before encryption): 0.84%
+Encrypted accuracy: 0.79%
+Decrypted accuracy: 84.27%
+Restoration factor: 106.7x
+Accuracy recovery: 100.0% of original performance
+✓ SUCCESS: Full performance restoration achieved!
+  Recovered 100.0% of original performance (84.27% vs 0.84%)
+  Restoration factor: 106.7x improvement from encrypted state
+
+
+# See artifact/results/claim2/decryption_results.json
+
+{
+    "original_accuracy": 0.8427,
+    "encrypted_accuracy": 0.79,
+    "decrypted_accuracy": 84.27,
+    "restoration_factor": 106.67088607594935,
+    "accuracy_recovery_percent": 100.0,
+    "num_decrypted_layers": 4
+}

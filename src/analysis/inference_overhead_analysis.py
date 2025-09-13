@@ -1486,13 +1486,14 @@ def main():
 
     Command line usage:
     python inference_overhead_analysis.py --replot --device gpu --output-dir results/analysis
+    python inference_overhead_analysis.py --replot --device cuda:1 --output-dir results/analysis
     """
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Inference Overhead Analysis for Dual Encryption')
     parser.add_argument('--replot', action='store_true',
                        help='Regenerate plots from existing CSV files instead of running new experiments')
     parser.add_argument('--device', type=str, default='gpu',
-                       choices=['gpu', 'cpu'], help='Device name for CSV files (default: gpu)')
+                       help='Device for computation (gpu, cpu, cuda, cuda:0, cuda:1, etc.)')
     parser.add_argument('--output-dir', type=str, default='results/analysis',
                        help='Directory containing CSV files or where to save results (default: results/analysis)')
     parser.add_argument('--include-batch64', action='store_true', default=True,
@@ -1503,32 +1504,64 @@ def main():
     # Handle CSV regeneration mode
     if args.replot:
         print("Regenerating plots from CSV files...")
+        # For CSV regeneration, normalize device name for file lookup
+        if args.device.startswith('cuda') or args.device == 'gpu':
+            device_name = 'gpu'
+        else:
+            device_name = 'cpu'
         regenerate_plots(
-            device_name=args.device,
+            device_name=device_name,
             output_dir=args.output_dir,
             include_batch64=args.include_batch64
         )
         return
 
-    # Check available devices
+    # Check available devices and validate requested device
     available_devices = []
+    requested_device = args.device
 
     if torch.cuda.is_available():
         available_devices.append("cuda")
         print(f"✓ CUDA available: {torch.cuda.get_device_name(0)}")
+        if torch.cuda.device_count() > 1:
+            print(f"✓ Multiple CUDA devices available: {torch.cuda.device_count()} devices")
 
     available_devices.append("cpu")
     print("✓ CPU available")
-    print(f"\nRunning analysis on {len(available_devices)} device(s): {', '.join([d.upper() for d in available_devices])}")
+
+    # Validate and normalize the requested device
+    if requested_device == 'gpu':
+        if torch.cuda.is_available():
+            device_to_run = 'cuda'
+        else:
+            print("Warning: GPU requested but CUDA not available, using CPU")
+            device_to_run = 'cpu'
+    elif requested_device.startswith('cuda'):
+        if torch.cuda.is_available():
+            # Validate specific CUDA device if specified
+            if ':' in requested_device:
+                device_id = int(requested_device.split(':')[1])
+                if device_id >= torch.cuda.device_count():
+                    print(f"Error: CUDA device {device_id} not available. Available devices: 0-{torch.cuda.device_count()-1}")
+                    return
+            device_to_run = requested_device
+        else:
+            print("Error: CUDA requested but not available")
+            return
+    elif requested_device == 'cpu':
+        device_to_run = 'cpu'
+    else:
+        print(f"Error: Invalid device '{requested_device}'. Use 'gpu', 'cpu', 'cuda', 'cuda:0', 'cuda:1', etc.")
+        return
+
+    print(f"\nRunning analysis on device: {device_to_run.upper()}")
     print(f"Configuration: CPU runs={NUM_RUNS_CPU}, GPU runs={NUM_RUNS_GPU}")
 
-    # Run analysis on each available device
-    for device in available_devices:
-        try:
-            run_device_analysis(device)
-        except Exception as e:
-            print(f"Error running analysis on {device.upper()}: {str(e)}")
-            continue
+    # Run analysis on the specified device
+    try:
+        run_device_analysis(device_to_run)
+    except Exception as e:
+        print(f"Error running analysis on {device_to_run.upper()}: {str(e)}")
 
     print(f"\n{'='*60}")
 

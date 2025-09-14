@@ -73,10 +73,10 @@ class InferenceOverheadAnalyzer:
     # Global font size configuration for all plots - centralized for easy maintenance
     # To change any font size, simply update the values here!
     FONT_SIZES = {
-        'main_title': 50,      # Main figure title
+        'main_title': 55,      # Main figure title
         'axis_labels': 48,     # X and Y axis labels
         'subtitles': 40,       # Subplot titles (a, b, c, d)
-        'ratio_text': 32,      # Overhead ratio text above bars
+        'ratio_text': 40,      # Overhead ratio text above bars
         'tick_labels': 28,     # X and Y tick labels
         'legend': 40           # Legend text
     }

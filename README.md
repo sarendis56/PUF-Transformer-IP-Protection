@@ -138,6 +138,24 @@ Encrypted = P × Original × P^T
 
 The framework includes comprehensive analysis tools for studying encryption effectiveness:
 
+### Comprehensive Analysis
+
+Run the following three analysis experiments (excluding the Decrypt One Layer experiment) in sequence. Update the `analysis_config.yaml` file to specify the desired analyses and their types. This is the convenient and recommended way.
+
+```bash
+# With uv
+uv run python src/experiments/comprehensive_analysis.py --config configs/analysis_config.yaml
+
+# Various options such as device can be specified here as well (supported by most experiments)
+uv run python src/experiments/comprehensive_analysis.py --config configs/analysis_config.yaml --device cuda:1
+
+# Replot existing CSV files to generate plots without rerunning the experiments and specify output directory
+uv run python src/experiments/comprehensive_analysis.py --config configs/analysis_config.yaml --replot --output-dir results/analysis
+
+# With activated venv
+python src/experiments/comprehensive_analysis.py --config configs/analysis_config.yaml
+```
+
 ### ACM Key Sensitivity Analysis
 
 Analyze how different Arnold Cat Map keys affect model performance:
@@ -196,17 +214,6 @@ python src/experiments/decrypt_one_layer_experiment.py --checkpoint results/vit_
 python src/experiments/decrypt_one_layer_experiment.py --checkpoint-dir results/ --analyze-all
 ```
 
-### Comprehensive Analysis
-
-Run all three analysis experiments in sequence. Update the `analysis_config.yaml` file to specify the desired analyses and their types:
-
-```bash
-# With uv
-uv run python src/experiments/comprehensive_analysis.py --config configs/analysis_config.yaml
-
-# With activated venv
-python src/experiments/comprehensive_analysis.py --config configs/analysis_config.yaml
-```
 
 ### ACM Performance Benchmarking
 

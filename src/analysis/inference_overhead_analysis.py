@@ -70,13 +70,25 @@ class TimingBreakdown:
 class InferenceOverheadAnalyzer:
     """Analyzer for measuring dual encryption inference overhead."""
 
-    def __init__(self, model_name: str = "google/vit-base-patch16-224", device: str = "auto", batch_size: int = 1):
+    # Global font size configuration for all plots - centralized for easy maintenance
+    # To change any font size, simply update the values here!
+    FONT_SIZES = {
+        'main_title': 50,      # Main figure title
+        'axis_labels': 48,     # X and Y axis labels
+        'subtitles': 40,       # Subplot titles (a, b, c, d)
+        'ratio_text': 32,      # Overhead ratio text above bars
+        'tick_labels': 28,     # X and Y tick labels
+        'legend': 40           # Legend text
+    }
+
+    def __init__(self, model_name: str = "google/vit-base-patch16-224", device: str = "auto", batch_size: int = 1, skip_imagenet: bool = False):
         """Initialize the analyzer with model and device.
 
         Args:
             model_name: Name of the ViT model to use
             device: Device to run on ('auto', 'cuda', or 'cpu')
             batch_size: Batch size for inference (default: 1 for single sequential inference)
+            skip_imagenet: Skip loading ImageNet dataset (useful for plot regeneration)
         """
         self.model_name = model_name
 
@@ -122,8 +134,13 @@ class InferenceOverheadAnalyzer:
                 print(f"Warning: Could not save model locally: {save_error}")
                 print("Model will be loaded from HuggingFace Hub on future runs")
 
-        # Sample real images from ImageNet dataset
-        self.sample_input = self._load_imagenet_samples(num_samples=1000, batch_size=self.batch_size)
+        # Sample real images from ImageNet dataset (skip if only regenerating plots)
+        if not skip_imagenet:
+            self.sample_input = self._load_imagenet_samples(num_samples=1000, batch_size=self.batch_size)
+        else:
+            print("Skipping ImageNet dataset loading for plot regeneration...")
+            self.sample_input = None
+            self.imagenet_samples = None
 
         # Select optimal Arnold functions for this device
         self.arnold_encrypt, self.arnold_decrypt = get_optimal_arnold_functions(self.device)
@@ -657,16 +674,8 @@ class InferenceOverheadAnalyzer:
         """Create comprehensive overhead breakdown plot with batch size comparison."""
         print("\nCreating overhead breakdown plot...")
 
-        # Font size configuration - centralized for easy maintenance
-        # To change any font size, simply update the values here!
-        FONT_SIZES = {
-            'main_title': 40,      # Main figure title
-            'axis_labels': 42,     # X and Y axis labels
-            'subtitles': 36,       # Subplot titles (a, b, c, d)
-            'ratio_text': 24,      # Overhead ratio text above bars
-            'tick_labels': 28,     # X and Y tick labels
-            'legend': 30          # Legend text
-        }
+        # Use class-level font size configuration
+        FONT_SIZES = self.FONT_SIZES
 
         # Set up the plotting style
         plt.style.use('seaborn-v0_8-whitegrid')
@@ -678,7 +687,7 @@ class InferenceOverheadAnalyzer:
                     fontsize=FONT_SIZES['main_title'], fontweight='bold', y=0.98)
 
         # Add more spacing between title and subplots
-        plt.subplots_adjust(top=0.88, hspace=0.3, wspace=0.2)
+        plt.subplots_adjust(top=1, hspace=0.3, wspace=0.2)
 
         # Colors for different components
         colors = {
@@ -729,8 +738,9 @@ class InferenceOverheadAnalyzer:
                 ax1.text(i, total_time + 0.05, 'N/A', ha='center', va='bottom',
                         fontsize=FONT_SIZES['ratio_text'], fontweight='bold')
 
-        ax1.set_xlabel('Number of ACM Iterations\n(a) Performance vs ACM Iterations (Batch Size = 1)', fontsize=FONT_SIZES['axis_labels'])
+        ax1.set_xlabel('Number of ACM Iterations', fontsize=FONT_SIZES['axis_labels'])
         ax1.set_ylabel('Time (ms)', fontsize=FONT_SIZES['axis_labels'])
+        # ax1.set_title('(a) Performance vs ACM Iterations (Batch Size = 1)', fontsize=FONT_SIZES['subtitles'], pad=30)
         ax1.set_xticks(x_positions)
         ax1.set_xticklabels(n_iterations, fontsize=FONT_SIZES['tick_labels'])
         ax1.tick_params(axis='y', labelsize=FONT_SIZES['tick_labels'])
@@ -789,8 +799,9 @@ class InferenceOverheadAnalyzer:
                 ax2.text(i, total_time + 0.05, 'N/A', ha='center', va='bottom',
                         fontsize=FONT_SIZES['ratio_text'], fontweight='bold')
 
-        ax2.set_xlabel('Number of Encrypted Layers\n(b) Performance vs Number of Encrypted Layers (Batch Size = 1)', fontsize=FONT_SIZES['axis_labels'])
+        ax2.set_xlabel('Number of Encrypted Layers', fontsize=FONT_SIZES['axis_labels'])
         ax2.set_ylabel('Time (ms)', fontsize=FONT_SIZES['axis_labels'])
+        # ax2.set_title('(b) Performance vs Number of Encrypted Layers (Batch Size = 1)', fontsize=FONT_SIZES['subtitles'], pad=30)
         ax2.set_xticks(x_positions)
         ax2.set_xticklabels(n_layers, fontsize=FONT_SIZES['tick_labels'])
         ax2.tick_params(axis='y', labelsize=FONT_SIZES['tick_labels'])
@@ -800,9 +811,7 @@ class InferenceOverheadAnalyzer:
             forward_times, acm_enc_times, acm_dec_times, ffn_enc_times, ffn_dec_times)])
         ax2.set_ylim(0, y_max * 1.15)  # Add 15% extra space at the top
 
-        legend = ax2.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=FONT_SIZES['legend'])
-        legend.get_frame().set_alpha(0.8)
-        legend.get_frame().set_edgecolor('lightgray')
+        # No legend for second subfigure to save vertical space
         ax2.grid(True, alpha=0.3)
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)
@@ -848,8 +857,9 @@ class InferenceOverheadAnalyzer:
                 ax3.text(i, total_time + 0.05, 'N/A', ha='center', va='bottom',
                         fontsize=FONT_SIZES['ratio_text'], fontweight='bold')
 
-        ax3.set_xlabel('Number of ACM Iterations\n(c) Performance vs ACM Iterations (Batch Size = 64)', fontsize=FONT_SIZES['axis_labels'])
+        ax3.set_xlabel('Number of ACM Iterations', fontsize=FONT_SIZES['axis_labels'])
         ax3.set_ylabel('Time (ms)', fontsize=FONT_SIZES['axis_labels'])
+        # ax3.set_title('(c) Performance vs ACM Iterations (Batch Size = 64)', fontsize=FONT_SIZES['subtitles'], pad=30)
         ax3.set_xticks(x_positions)
         ax3.set_xticklabels(n_iterations, fontsize=FONT_SIZES['tick_labels'])
         ax3.tick_params(axis='y', labelsize=FONT_SIZES['tick_labels'])
@@ -906,8 +916,9 @@ class InferenceOverheadAnalyzer:
                 ax4.text(i, total_time + 0.05, 'N/A', ha='center', va='bottom',
                         fontsize=FONT_SIZES['ratio_text'], fontweight='bold')
 
-        ax4.set_xlabel('Number of Encrypted Layers\n(d) Performance vs Number of Encrypted Layers (Batch Size = 64)', fontsize=FONT_SIZES['axis_labels'])
+        ax4.set_xlabel('Number of Encrypted Layers', fontsize=FONT_SIZES['axis_labels'])
         ax4.set_ylabel('Time (ms)', fontsize=FONT_SIZES['axis_labels'])
+        # ax4.set_title('(d) Performance vs Number of Encrypted Layers (Batch Size = 64)', fontsize=FONT_SIZES['subtitles'], pad=30)
         ax4.set_xticks(x_positions)
         ax4.set_xticklabels(n_layers, fontsize=FONT_SIZES['tick_labels'])
         ax4.tick_params(axis='y', labelsize=FONT_SIZES['tick_labels'])
@@ -917,9 +928,7 @@ class InferenceOverheadAnalyzer:
             forward_times_b64, acm_enc_times_b64, acm_dec_times_b64, ffn_enc_times_b64, ffn_dec_times_b64)])
         ax4.set_ylim(0, y_max * 1.15)  # Add 15% extra space at the top
 
-        legend = ax4.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=FONT_SIZES['legend'])
-        legend.get_frame().set_alpha(0.8)
-        legend.get_frame().set_edgecolor('lightgray')
+        # No legend for second subfigure to save vertical space
         ax4.grid(True, alpha=0.3)
         ax4.spines['top'].set_visible(False)
         ax4.spines['right'].set_visible(False)
@@ -1000,15 +1009,8 @@ class InferenceOverheadAnalyzer:
         """Create a separate figure with only batch size 64 plots (c) and (d)."""
         print("\nCreating batch size 64 only plot...")
 
-        # Font size configuration - same as main plot
-        FONT_SIZES = {
-            'main_title': 40,      # Main figure title
-            'axis_labels': 42,     # X and Y axis labels
-            'subtitles': 36,       # Subplot titles (c, d)
-            'ratio_text': 24,      # Overhead ratio text above bars
-            'tick_labels': 28,     # X and Y tick labels
-            'legend': 30          # Legend text
-        }
+        # Use class-level font size configuration
+        FONT_SIZES = self.FONT_SIZES
 
         # Set up the plotting style
         plt.style.use('seaborn-v0_8-whitegrid')
@@ -1020,7 +1022,7 @@ class InferenceOverheadAnalyzer:
                     fontsize=FONT_SIZES['main_title'], fontweight='bold', y=0.95)
 
         # Add more spacing between title and subplots
-        plt.subplots_adjust(top=0.85, hspace=0.3, wspace=0.2)
+        plt.subplots_adjust(top=1, hspace=0.3, wspace=0.2)
 
         # Colors for different components
         colors = {
@@ -1072,8 +1074,9 @@ class InferenceOverheadAnalyzer:
                 ax1.text(i, total_time + 0.05, 'N/A', ha='center', va='bottom',
                         fontsize=FONT_SIZES['ratio_text'], fontweight='bold')
 
-        ax1.set_xlabel('Number of ACM Iterations\n(a) Performance vs ACM Iterations (Batch Size = 64)', fontsize=FONT_SIZES['axis_labels'])
+        ax1.set_xlabel('Number of ACM Iterations', fontsize=FONT_SIZES['axis_labels'])
         ax1.set_ylabel('Time (ms)', fontsize=FONT_SIZES['axis_labels'])
+        # ax1.set_title('(a) Performance vs ACM Iterations (Batch Size = 64)', fontsize=FONT_SIZES['subtitles'], pad=30)
         ax1.set_xticks(x_positions)
         ax1.set_xticklabels(n_iterations, fontsize=FONT_SIZES['tick_labels'])
         ax1.tick_params(axis='y', labelsize=FONT_SIZES['tick_labels'])
@@ -1131,8 +1134,9 @@ class InferenceOverheadAnalyzer:
                 ax2.text(i, total_time + 0.05, 'N/A', ha='center', va='bottom',
                         fontsize=FONT_SIZES['ratio_text'], fontweight='bold')
 
-        ax2.set_xlabel('Number of Encrypted Layers\n(b) Performance vs Number of Encrypted Layers (Batch Size = 64)', fontsize=FONT_SIZES['axis_labels'])
+        ax2.set_xlabel('Number of Encrypted Layers', fontsize=FONT_SIZES['axis_labels'])
         ax2.set_ylabel('Time (ms)', fontsize=FONT_SIZES['axis_labels'])
+        # ax2.set_title('(b) Performance vs Number of Encrypted Layers (Batch Size = 64)', fontsize=FONT_SIZES['subtitles'], pad=30)
         ax2.set_xticks(x_positions)
         ax2.set_xticklabels(n_layers, fontsize=FONT_SIZES['tick_labels'])
         ax2.tick_params(axis='y', labelsize=FONT_SIZES['tick_labels'])
@@ -1142,9 +1146,7 @@ class InferenceOverheadAnalyzer:
             forward_times_b64, acm_enc_times_b64, acm_dec_times_b64, ffn_enc_times_b64, ffn_dec_times_b64)])
         ax2.set_ylim(0, y_max * 1.15)  # Add 15% extra space at the top
 
-        legend = ax2.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=FONT_SIZES['legend'])
-        legend.get_frame().set_alpha(0.8)
-        legend.get_frame().set_edgecolor('lightgray')
+        # No legend for second subfigure to save vertical space
         ax2.grid(True, alpha=0.3)
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)
@@ -1392,8 +1394,8 @@ def regenerate_plots(device_name: str = "gpu", output_dir: str = "results/analys
         output_dir: Directory where CSV files are located
         include_batch64: Whether to include batch size 64 data if available
     """
-    # Create a minimal analyzer instance just for plotting
-    analyzer = InferenceOverheadAnalyzer(device="cpu", batch_size=1)  # Device doesn't matter for CSV regeneration
+    # Create a minimal analyzer instance just for plotting (skip ImageNet loading)
+    analyzer = InferenceOverheadAnalyzer(device="cpu", batch_size=1, skip_imagenet=True)  # Device doesn't matter for CSV regeneration
     analyzer.regenerate_plots_from_csv(device_name, output_dir, include_batch64)
 
 

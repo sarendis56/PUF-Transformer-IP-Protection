@@ -11,7 +11,11 @@ This repository implements a novel dual encryption approach for Vision Transform
 
 The dual approach provides enhanced security by using different encryption methods for different neural network components, making it significantly more difficult for attackers to reverse-engineer the protection scheme.
 
-In order for the artifact to be [reviewed](https://www.acsac.org/2025/submissions/papers/artifacts/) by artifact reviewers who do not have access to high-end GPUs, we provide a scaled-down, reproducible demonstration of the method using DeiT-tiny on CIFAR-100, adapted from the full-scale ViT-base + ImageNet implementation. The artifact is available in the `artifact/` directory. Please refer to `README.md-Artifact` for instructions.
+[Access The Paper](https://drive.google.com/drive/u/0/folders/1CvXO9nIcbTHnzmaxqUpClU6jJ3QTdF1k)
+
+#### Artifact
+
+Our paper has been "Artifact Available," "Artifact Reviewed," and "Artifact Reproducible" badges. In order for the artifact to be [reviewed](https://www.acsac.org/2025/submissions/papers/artifacts/) by artifact reviewers who do not have access to high-end GPUs, we provide a scaled-down, reproducible demonstration of the method using DeiT-tiny on CIFAR-100, adapted from the full-scale ViT-base + ImageNet implementation. The artifact is available in the **`artifact/`** directory. Please refer to **`README.md-Artifact`** for instructions.
 
 ## Installation
 
